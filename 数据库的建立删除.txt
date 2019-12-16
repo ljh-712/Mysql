@@ -1,0 +1,28 @@
+一、数据库的操作
+1、数据库的建立
+create database ljh;
+ create database if not exists ljh;//表示如果ljh数据库不存在就建立，防止出错
+2、展示数据库
+show databases;//看数据库都有哪些
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| class_13_db2       |
+| ljh                |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+3、使用数据库
+ use ljh;//如果在数据库里建表需要确定在哪个里面建表，用哪个use哪个
+4、 select database();
+
++------------+
+| database() |
++------------+
+| ljh        |
++------------+
+5、删除数据库
+drop database if exists ljh;//如果该数据库存在就删除，防止没有数据库出现删除错误
