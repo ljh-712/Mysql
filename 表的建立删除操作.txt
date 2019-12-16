@@ -1,0 +1,219 @@
+一、
+①CRUD 即增加(Create)、查询(Retrieve)、更新(Update)、删除(Delete)四个单词的首字母缩写。
+②数据库的注释   “--空格+描述”
+二、
+1、建表create
+create table stu_test (
+     id int,
+     name varchar(2),
+    );
+2、展示表中的字段
+ desc student;
++------------------+--------------+------+-----+---------+-------+
+| Field            | Type         | Null | Key | Default | Extra |
++------------------+--------------+------+-----+---------+-------+
+| id               | int(11)      | YES  |     | NULL    |       |
+| sequence_numbers | int(11)      | YES  |     | NULL    |       |
+| name             | varchar(20)  | YES  |     | NULL    |       |
+| qq_mail          | varchar(100) | YES  |     | NULL    |       |
++------------------+--------------+------+-----+---------+-------+
+3、插入数据： 数量必须和定义表的列的数量及顺序一致 
+①单行数据全列插入
+insert into student values(09,20170205,'mike','150317');
+②多行数据指定列插入
+insert into student(id,name,qq_mail) values(10,'章','187956'),(11,'章','167956'),
+(12,'章','187956');
+③多行数据全列插入
+insert into student(id,sequence_numbers,name,qq_mail) values
+(09,20170205,'mike','150317'),(09,20170205,'mike','150317'),(09,20170205,'mike','150317');
+
+insert into student values(09,20170205,'mike','150317'),(09,20170205,'mike','150317'),(09,20170205,'mike','150317');
+4、查询：
+①全列查询
+ select *from student;
+②、指定列查询
+select id,qq_mail from student;
+③、查询字段为表达式
+ select id,qq_mail,10 from student;
++------+--------------------+----+
+| id   | qq_mail            | 10 |
++------+--------------------+----+
+|    1 | 1503179376@qq.com  | 10 |
+|    2 | 15258697888@qq.com | 10 |
+|    3 | NULL               | 10 |
+|    4 | NULL               | 10 |
+|    4 | NULL               | 10 |
+|   10 | 1503179            | 10 |
+|    9 | 150317             | 10 |
+|   10 | 187956             | 10 |
+|   11 | 167956             | 10 |
+|   12 | 187956             | 10 |
+|    9 | 150317             | 10 |
+|    9 | 150317             | 10 |
+|    9 | 150317             | 10 |
+|    9 | 150317             | 10 |
+|    9 | 150317             | 10 |
+|    9 | 150317             | 10 |
++------+--------------------+----+
+
+select 10 from student;
++----+
+| 10 |
++----+
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
++----+
+④为查询结果中的列指定别名，表示返回的结果集中，以别名作为该列的名称
+ select qq_mail as qq from student;
++--------------------+
+| qq                 |
++--------------------+
+| 1503179376@qq.com  |
+| 15258697888@qq.com |
+| NULL               |
+| NULL               |
+| NULL               |
+| 1503179            |
+| 150317             |
+| 187956             |
+| 167956             |
+| 187956             |
+| 150317             |
+| 150317             |
+| 150317             |
+| 150317             |
+| 150317             |
+| 150317             |
++--------------------+
+ select 10 as jj from student;
++----+
+| jj |
++----+
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
+| 10 |
++----+
+⑤去重：使用DISTINCT关键字对某列数据进行去重：
+select distinct id from student;
++------+
+| id   |
++------+
+|    1 |
+|    2 |
+|    3 |
+|    4 |
+|   10 |
+|    9 |
+|   11 |
+|   12 |
++------+
+select distinct id,sequence_numbers from student;
+⑥、排序order by;
+  ①降序 DESC
+ select name,math from stu_score order by math desc;
++--------+------+
+| name   | math |
++--------+------+
+| 小明   |   89 |
+| 鹿鸣   |   89 |
+| 程野   |   88 |
+| 魏聪   |   75 |
+| 肖战   |   68 |
+| 王哲   |   68 |
+| 李哲   |   68 |
+| 马敏   | NULL |
++--------+------+
+②升序 ASC
+ select name,math from stu_score order by math asc;
++--------+------+
+| name   | math |
++--------+------+
+| 马敏   | NULL |
+| 肖战   |   68 |
+| 王哲   |   68 |
+| 李哲   |   68 |
+| 魏聪   |   75 |
+| 程野   |   88 |
+| 小明   |   89 |
+| 鹿鸣   |   89 |
++--------+------+
+⑦、条件查询
+  ①运算符
+运算符                                       说明
+>, >=, <, <= 大于，大于等于，小于，小于等于
+= 等于，NULL 不安全，例如 NULL = NULL 的结果是 NULL
+<=> 等于，NULL 安全，例如 NULL <=> NULL 的结果是 TRUE(1)
+!=, <> 不等于
+BETWEEN a0 AND a1
+范围匹配，[a0, a1]，如果 a0 <= value <= a1，返回 TRUE(1)
+IN (option, ...) 如果是 option 中的任意一个，返回 TRUE(1)
+IS NULL 是 NULL
+IS NOT NULL 不是 NULL
+LIKE
+模糊匹配。% 表示任意多个（包括 0 个）任意字符；_ 表示任意一个字 符
+
+select name,math from stu_score where math is null; 
+
+select name,chinese from stu_score where chinese between 80 and 100;
+
+select name,chinese from stu_score where math in(88,85,95);//查询数学成绩是 88或者 85 或者 95 分的同学及数学成绩 （or）
+
+select name from stu_score where name like '程%';
+⑧、分页查询Limit
+ select name,math from stu_score limit 3;//从0开始筛选三条结果
+
+select name,math from stu_score order by math limit 3 offset 0;//：按 id 进行分页，每页 3 条记录
+select name,math from stu_score order by math limit 3 offset 3;
+select name,math from stu_score order by math limit 3 offset 6;
+5、删除delete  DELETE FROM ?table_name [WHERE ...] [ORDER BY ...] [LIMIT...] 
+delete from stu_score where name='小明';
+
+delete from student;//删除整张表数据
+6、修改update      UPDATE table_name SET column = expr [, column = expr ...]    [WHERE ...] [ORDER BY ...] [LIMIT ...] 
+update stu_score set math=60 where name='程野';
+update stu_score  set math=math+30 order by chinese+math+english limit 3;// 将数学成绩倒数前三的 3 位同学的数学成绩加上 30 分 
+7、总结
+--单行插入 insert into 表(字段1, ..., 字段N) values (value1, ..., value N);
+
+-- 多行插入 insert into 表(字段1, ..., 字段N) values (value1, ...), (value2, ...), (value3, ...);
+
+-- 全列查询 select * from 表 -- 指定列查询 
+
+select 字段1,字段2... from 表 -- 查询表达式字段 
+select 字段1+100,字段2+字段3 from 表 -- 别名 select 字段1 别名1, 字段2 别名2 from 表 
+-- 去重DISTINCT select distinct 字段 from 表
+
+ -- 排序ORDER BY select * from 表 order by 排序字段
+ -- 条件查询WHERE：
+ -- (1)比较运算符 (2)BETWEEN ... AND ... (3)IN (4)IS NULL (5)LIKE (6)AND (7)OR (8)NOT select * from 表 where 条件
+
+update 表 set 字段1=value1, 字段2=value2... where 条件
+
+delete from 表 where 条件
