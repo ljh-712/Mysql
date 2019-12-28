@@ -17,7 +17,7 @@ show databases;//看数据库都有哪些
 +--------------------+
 3、使用数据库
  use ljh;//如果在数据库里建表需要确定在哪个里面建表，用哪个use哪个
-4、 select database();
+4、 select database();看在哪里工作
 
 +------------+
 | database() |
