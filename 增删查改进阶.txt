@@ -1,29 +1,53 @@
-﻿一、修改
+﻿一、约束：保证数据记录符合现实世界的意义
+
+数据库的完整性包括：
+1、实体完整性
+primary key 
+
+2、参照完整性
+foreign key
+3、用户自定义完整性
+not null ,unique,check,default
+4、语法
+创建班级表，有使用MySQL关键字作为字段时，需要使用‘  ’来标识
+DROP TABLE IF EXISTS classes;
+CREATE TABLE classes (
+id INT PRIMARY KEY auto _increment,
+name VARCHAR(20) ，
+desc”VARCHAR(100)
+);
+
+CREATE TABLE student (
+id INT PRIMARY KEY auto _i ncrement,
+sn INT UNIQUE，
+name VARCHAR(20) DEFAULT 'unkown' ，
+qq_ mail VARCHAR(20)，
+classes_id int,
+FOREIGN KEY (classes_id) REFERENCES classes(id)
+);
+
+
+三、修改
 1、修改表名**mysql> alter table book rename book1;
 2、修改字段名** alter table book2 change price price1 int;
 **mysql> rename table book1 to book3;
-二、聚合函数
+
+四、聚合函数
 4 rows in set (0.00 sec)
 
 
 2、查询表里的记录个数 count
 
-*mysql> select count(name) from book2;
-*mysql> select count(*) from book2;
+*mysql> select count(name) from book2;count(字段) 忽略空null
+*mysql> select count(*) from book2;注意count(*)不忽略空与0
 
 3、求和sum
 mysql> select sum(price) from book2;
 求平均数
 4、mysql> select avg(price) from book2;
 5、最大最小max,min
-
-
-
-
-
-
-
-
+6、group by 可以对指定列进行分组查询（需要满足的条件select 指定的字段必须是分组依据字段，其他字段想要出现在select中则必须包含在聚合函数中）
+7、having跟在group by后面，对分组的条件进行过滤。（作用相当于where，但是聚合函数不能用where）
 create table student(
 sn int primary key,
 name varchar(10) not null,
@@ -38,15 +62,20 @@ insert into student (name,sn,mysql,java) values('吴明',09,89.5,90),
 insert into student (name,sn,mysql,english) values('boby',21,89.5,87),
 ('ll',31,69.5,87);
 insert into student values(20190102,'李明',5991865542),(20190102,'kk',1865542);
-一、约束：保证数据记录符合现实世界的意义
-数据库的完整性包括：
-1、实体完整性
-primary key 
-2、参照完整性
-foreign key
-3、用户自定义完整性
-not null ,unique,check,default
 
+五、联合查询
+1、内连接
+select  字段 from 表1 别名1，表2 别名2 where 连接条件 and  连接条件;
+select  字段 from 表1 别名1 join 表2 别名2  on 连接条件 and  连接条件;
+2、左外连接：联合查询时左侧的表完全显示
+select  字段 from 表1 别名1 left  join 表2 别名2  on 连接条件 and  连接条件;
+3、右外连接：联合查询时右侧的表完全显示
+select  字段 from 表1 别名1 right  join 表2 别名2  on 连接条件 and  连接条件;
+4、自连接：同一张表进行自连接查询
+select . . . from 表1，表1 where 条件
+
+六、SQL各个关键字的执行顺序：
+from>on>join>where>group by >with>having>select>distinct>order by>limit
 二、设计一个选课系统要求,要求
 1、学生新学期开始能够选课，选择某老师的课
 2、学生必须要有所在的班级信息
@@ -95,7 +124,4 @@ E-R图
 2、建立关系
 3、标出属性
 4、标注主键
-
-三、
-
 
