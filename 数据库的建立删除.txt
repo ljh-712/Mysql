@@ -9,7 +9,245 @@ show databases;//看数据库都有哪些
 | Database           |
 +--------------------+
 | information_schema |
-| class_13_db2       |
+| class_13_db2       |面试题摘录
+非关系型数据库和关系型数据库的区别是什么？
+关系型数据库（RDBMS）：
+是指采用了关系模型来组织数据的数据库。 简单来说，关系模型指的就是二维表格模型，而一个
+关系型数据库就是由二维表及其之间的联系所组成的一个数据组织。
+基于标准的SQL，只是内部一些实现有区别。常用的关系型数据库如：
+
+Oracle：甲骨文产品，适合大型项目，适用于做复杂的业务逻辑，如ERP、OA等企业信息系
+统。收费。
+MySQL：属于甲骨文，不适合做复杂的业务。开源免费。
+SQL Server：微软的产品，安装部署在windows server上，适用于中大型项目。收费。
+非关系型数据库：
+（了解）不规定基于SQL实现。现在更多是指NoSQL数据库，如：
+基于键值对（Key-Value）：如 memcached、redis
+基于文档型：如 mongodb
+基于列族：如 hbase
+基于图型：如 neo4j
+
+数据库的分页查询了解吗？（limit命令）
+SELECT * FROM table LIMIT [offset,] rows | rows OFFSET offset 
+//，第一个参数指定第一个返回记录行的偏移量，第二个参数指定返回记录行的最大数目。初始记录行的偏移量是 0(而不是 1)
+1
+2
+mysql> SELECT * FROM table LIMIT 5,10; // 检索记录行 6-15 
+1
+为了检索从某一个偏移量到记录集的结束所有的记录行，可以指定第二个参数为 -1：
+
+ SELECT * FROM table LIMIT 95,-1; // 检索记录行 96-last. 
+1
+如果只给定一个参数，它表示返回最大的记录行数目：`
+
+SELECT * FROM table LIMIT 5; //检索前 5 个记录行 
+1
+分页优化：随着数据量的增加，页数会越来越多，LIMIT语句的偏移量就会越大，速度也会明显变慢。此时，我们可以通过子查询的方式来提高分页效率
+
+
+```java
+SELECT * FROM articles WHERE id >= (SELECT id FROM articles
+ WHERE category_id = 123 ORDER BY id LIMIT 10000, 1) LIMIT 10 
+1
+2
+3
+4
+union和unionAll的区别，以及什么情况下使用他们
+将两个select的结果作为一个整体显示出来。
+union all是将两个select语句的结果求并集。 union是将union all的结果下再去除重复数据
+满足条件：
+1、两个select查询的列的数量必须相同；
+2、每个列的数据类型需要相似；
+select * from user1 | select * from user1
+union | union all
+select * from user2 | select * from user2
+
+列举几种表连接方式
+1、内连接
+
+select  字段 from 表1 别名1，表2 别名2 where 连接条件 and  连接条件;
+select  字段 from 表1 别名1 join 表2 别名2  on 连接条件 and  连接条件;
+1
+2
+2、左外连接：联合查询时左侧的表完全显示
+
+select  字段 from 表1 别名1 left  join 表2 别名2  on 连接条件 and  连接条件;
+1
+3、右外连接：联合查询时右侧的表完全显示
+
+select  字段 from 表1 别名1 right  join 表2 别名2  on 连接条件 and  连接条件;
+1
+4、自连接：同一张表进行自连接查询
+
+select . . . from 表1，表1 where 条件
+1
+性别反转 表中有个字段性别 = ‘m’ 代表男性 'f’代表女性,一句sql反转过来
+update person set sex=case sex when 'm' then 'f' else 'm' end;
++------+------+
+| id   | sex  |
++------+------+
+|    1 | m    |
+|    2 | m    |
+|    2 | f    |
+|    3 | f    |
+|    4 | m    |
++------+------+
++------+------+
+| id   | sex  |
++------+------+
+|    1 | f    |
+|    2 | f    |
+|    2 | m    |
+|    3 | m    |
+|    4 | f    |
++------+------+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+数据库中的范式有哪些？
+第一范式:确保每列的原子性.
+如果每列(或者每个属性)都是不可再分的最小数据单元(也称为最小的原子单元),则满足第一范式.
+例如:顾客表(姓名、编号、地址、……)其中"地址"列还可以细分为国家、省、市、区等。
+
+第二范式:在第一范式的基础上更进一层,目标是确保表中的每列都和主键相关.
+如果一个关系满足第一范式,并且除了主键以外的其它列,都依赖于该主键,则满足第二范式.
+例如:订单表(订单编号、产品编号、定购日期、价格、……)，"订单编号"为主键，"产品编号"和主键列没有直接的关系，即"产品编号"列不依赖于主键列，应删除该列。
+
+第三范式:在第二范式的基础上更进一层,目标是确保每列都和主键列直接相关,而不是间接相关.
+如果一个关系满足第二范式,并且除了主键以外的其它列都不依赖于主键列,则满足第三范式.
+为了理解第三范式，需要根据Armstrong公里之一定义传递依赖。假设A、B和C是关系R的三个属性，如果A-〉B且B-〉C，则从这些函数依赖中，可以得出A-〉C，如上所述，依赖A-〉C是传递依赖。
+例如:订单表(订单编号，定购日期，顾客编号，顾客姓名，……)，初看该表没有问题，满足第二范式，每列都和主键列"订单编号"相关，再细看你会发现"顾客姓名"和"顾客编号"相关，"顾客编号"和"订单编号"又相关，最后经过传递依赖，"顾客姓名"也和"订单编号"相关。为了满足第三范式，应去掉"顾客姓名"列，放入客户表中。
+
+数据库连接的步骤
+1,获取连接
+
+方法一：通过DriverManger(驱动管理类)的静态方法获取
+
+
+
+```java
+// 加载JDBC驱动程序
+Class.forName("com.mysql.jdbc.Driver");
+// 创建数据库连接
+Connection connection = DriverManager.getConnection(url)
+1
+2
+3
+4
+5
+6
+7
+方法二：通过DataSource(数据源)对象获取。实际应用中使用
+
+DataSource ds = new MysqlDataSource();
+((MysqlDataSource) ds).setUrl("jdbc:mysql://localhost:3306/test");
+((MysqlDataSource) ds).setUser("root");
+((MysqlDataSource) ds).setPassword("root");
+Connection connection = ds.getConnection();
+1
+2
+3
+4
+5
+两种方法的区别:
+
+DriverManager类来获取的Connection连接，是无法重复利用的，每次使用完以后释放资源时，通过connection.close()都是关闭物理连接。
+DataSource提供连接池的支持。连接池在初始化时将创建一定数量的数据库连接，这些连接是可以复用的，每次使用完数据库连接，释放资源调用connection.close()都是将Conncetion连接对象回收
+2、创建操作命令
+
+PreparedStatement pstm= con.prepareStatement(sql);
+1
+3、执行sql语句
+
+// 查询操作
+preparedStatement.executeQuery();
+// 新增、修改、删除操作
+preparedStatement.executeUpdate();
+1
+2
+3
+4
+4、处理结果集
+
+  while (resultSet.next()) {
+	int xxx = resultSet.getInt("xxx");
+	String yyy= resultSet.getString("yyy");
+
+  }
+1
+2
+3
+4
+5
+5、释放资源
+
+try {
+       if (resultSet != null) {
+           resultSet.close();
+       }
+       if (preparedStatement != null) {
+           preparedStatement.close();
+       }
+       if (connection != null) {
+           connection.close();
+       }
+   } catch (SQLException e) {
+       e.printStackTrace();
+       throw new RuntimeException("数据库错误");
+   }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+为什么数据库连接需要单例模式，单例模式作用是什么
+1.单例只保留一个对象,可以减少系统资源开销。
+2.提高创建速度,每次都获取已经存在的对象因此提高创建速度全局共享对象。
+3.单例在系统中只存在一个对象实例,因此任何地方使用此对象都是一个对象避免多实例创建使用时产生的逻辑错误。
+
+为什么要用数据库连接池？
+1． 资源重用
+由于数据库连接得到重用，避免了频繁创建、释放连接引起的大量性能开销。在减少系统消耗的基础上，另一方面也增进了系统运行环境的平稳性（减少内存碎片以及数据库临时进程/线程的数量）。
+2． 更快的系统响应速度
+数据库连接池在初始化过程中，往往已经创建了若干数据库连接置于池中备用。此时连接的初始化工作均已完成。对于业务请求处理而言，直接利用现有可用连接，避免了数据库连接初始化和释放过程的时间开销，从而缩减了系统整体响应时间。
+3． 新的资源分配手段
+对于多应用共享同一数据库的系统而言，可在应用层通过数据库连接的配置，实现数据库连接池技术，几年钱也许还是个新鲜话题，对于目前的业务系统而言，如果设计中还没有考虑到连接池的应用，那么…….快在设计文档中加上这部分的内容吧。某一应用最大可用数据库连接数的限制，避免某一应用独占所有数据库资源。
+4． 统一的连接管理，避免数据库连接泄漏
+在较为完备的数据库连接池实现中，可根据预先的连接占用超时设定，强制收回被占用连接。从而避免了常规数据库连接操作中可能出现的资源泄漏。一个最小化的数据库连接池实现。
+
+数据库Statement和PreparedStatement有什么区别？
+Statement对象主要是将SQL语句发送到数据库中。用于执行不带参数的简单sql语句。
+PreparedStatement接口代表预编译的语句，它主要的优势在于可以减少SQL的编译错误并增加SQL的安全性减少SQL注射攻击的可能性；PreparedStatement中的SQL语句是可以带参数的（也可以不带），避免了用字符串连接拼接SQL语句的麻烦和不安全；预编译在数据库系统中，执行速度快（不用再次编译和生成执行计划）。
+
+CallableStatement接口用于执行数据库存储对象的调用
+————————————————
+版权声明：本文为CSDN博主「是鹿鸣啊」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_41552331/article/details/105544507
 | ljh                |
 | mysql              |
 | performance_schema |
